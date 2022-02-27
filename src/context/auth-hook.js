@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useCallback, useEffect } from "react";
 import { useHttpClient } from "../hooks/http-hook";
 
@@ -8,14 +9,25 @@ export const useAuth = () => {
 
   const fetchAuthUser = async () => {
     try {
-      const responseData = await sendRequest(
+      /*
+const responseData = await sendRequest(
         process.env.REACT_APP_BACKEND_URL + "/auth/user",
         "GET",
         null,
         {}
       );
-      setUserId(responseData.googleId);
-      setName(responseData.name);
+      */
+      const response = await axios.get(
+        process.env.REACT_APP_BACKEND_URL + "/auth/user",
+        { withCredentials: true }
+      );
+      console.log(response);
+
+      setUserId(response.data.googleId);
+      setName(response.data.name);
+
+      //setUserId(responseData.googleId);
+      //setName(responseData.name);
     } catch (err) {
       console.log(err);
     }
