@@ -7,14 +7,11 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { AuthContext } from "../context/auth-context";
+import { NavLink } from "react-router-dom";
 
 const ButtonAppBar = () => {
   //!auth.isLoggedIn
   const auth = React.useContext(AuthContext);
-
-  const handleLogin = () => {
-    auth.login();
-  };
 
   const handleLogout = () => {
     auth.logout();
@@ -49,14 +46,15 @@ const ButtonAppBar = () => {
           </Typography>
           <Box sx={{ display: "flex" }}>
             {!auth.isLoggedIn && (
-              <Button
-                variant="outlined"
-                color="inherit"
-                sx={{ textTransform: "none" }}
-                onClick={handleLogin}
-              >
-                Login with Google
-              </Button>
+              <NavLink to="/login" exact>
+                <Button
+                  variant="outlined"
+                  color="wh"
+                  sx={{ textTransform: "none" }}
+                >
+                  Login
+                </Button>
+              </NavLink>
             )}
             {auth.isLoggedIn && (
               <Typography
@@ -71,7 +69,7 @@ const ButtonAppBar = () => {
                   justifyContent: "center",
                 }}
               >
-                Logged in as {auth.name}
+                Logged in as {auth.email}
               </Typography>
             )}
             {auth.isLoggedIn && (

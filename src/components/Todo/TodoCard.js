@@ -58,8 +58,6 @@ export default function TodoCard(props) {
   };
 
   const switchStateHandler = async (event) => {
-    console.log("switch triggered");
-
     event.preventDefault();
     try {
       await sendRequest(

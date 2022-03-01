@@ -52,7 +52,6 @@ export default function MainPage() {
           Authorization: "Bearer " + auth.token,
         }
       );
-      console.log(responseData);
       responseData.todo.created = new Date(parseInt(responseData.todo.created));
       setTodos((oldTodo) => [responseData.todo, ...oldTodo]);
       showSnackbar("New To-Do created!", "success");
@@ -85,7 +84,8 @@ export default function MainPage() {
         const responseData = await sendRequest(
           process.env.REACT_APP_BACKEND_URL + `/todo/user/${auth.userId}`,
           "GET",
-          null
+          null,
+          { Authorization: "Bearer " + auth.token }
         );
         responseData.todos = responseData.todos.reverse();
         setTodos(

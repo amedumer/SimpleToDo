@@ -33,7 +33,6 @@ const AddTodoForm = (props) => {
       values = {
         ...values,
       };
-      console.log(values);
       props.onSubmitHandler(values);
       formik.resetForm();
     },

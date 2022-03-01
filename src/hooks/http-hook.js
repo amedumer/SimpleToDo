@@ -17,9 +17,7 @@ export const useHttpClient = () => {
           method,
           body,
           headers,
-          mode: "cors",
           signal: httpAbortCrtl.signal,
-          credentials: "include",
         });
 
         const responseData = await response.json();

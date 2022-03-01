@@ -1,96 +1,64 @@
-import axios from "axios";
 import { useState, useCallback, useEffect } from "react";
-import { useHttpClient } from "../hooks/http-hook";
+
+let logoutTimer;
 
 export const useAuth = () => {
+  const [token, setToken] = useState(null);
+  const [tokenExpirationDate, setTokenExpirationDate] = useState();
   const [userId, setUserId] = useState(null);
-  const [name, setName] = useState(null);
-  const { sendRequest } = useHttpClient();
+  const [email, setEmail] = useState(null);
 
-  const fetchAuthUser = async () => {
-    try {
-      /*
-const responseData = await sendRequest(
-        process.env.REACT_APP_BACKEND_URL + "/auth/user",
-        "GET",
-        null,
-        {}
-      );
-      */
-      const response = await axios.get(
-        process.env.REACT_APP_BACKEND_URL + "/auth/user",
-        { withCredentials: true }
-      );
-      console.log(response);
-
-      setUserId(response.data.googleId);
-      setName(response.data.name);
-
-      //setUserId(responseData.googleId);
-      //setName(responseData.name);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    let timer: NodeJS.Timeout | null = null;
-    const googleLoginURL = process.env.REACT_APP_BACKEND_URL + "/login/google";
-
-    const newWindow = await window.open(
-      googleLoginURL,
-      "_blank",
-      "width=500,height=600"
+  const login = useCallback((uid, email, token, expirationDate) => {
+    setToken(token);
+    setUserId(uid);
+    setEmail(email);
+    const tokenExpirationDate =
+      expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
+    setTokenExpirationDate(tokenExpirationDate);
+    localStorage.setItem(
+      "userData",
+      JSON.stringify({
+        userId: uid,
+        token: token,
+        expiration: tokenExpirationDate.toISOString(),
+        email: email,
+      })
     );
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser();
-          if (timer) {
-            clearInterval(timer);
-          }
-        }
-      }, 500);
-    }
-    return 1;
-  };
-
-  const login = useCallback(async () => {
-    handleGoogleLogin();
   }, []);
 
   const logout = useCallback(() => {
+    setToken(null);
+    setTokenExpirationDate(null);
     setUserId(null);
-    //localStorage.removeItem("userData");
+    setEmail(null);
+    localStorage.removeItem("userData");
   }, []);
 
   useEffect(() => {
-    fetchAuthUser();
-  }, []);
-
-  /*
-  useEffect(() => {
-    if (token) {
-      const remainingTime = expireDate.getTime() - new Date().getTime();
+    if (token && tokenExpirationDate) {
+      const remainingTime =
+        tokenExpirationDate.getTime() - new Date().getTime();
       logoutTimer = setTimeout(logout, remainingTime);
     } else {
       clearTimeout(logoutTimer);
     }
-  }, [token, logout, expireDate]);
+  }, [token, logout, tokenExpirationDate]);
 
-    useEffect(() => {
+  useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("userData"));
-
     if (
       storedData &&
       storedData.token &&
       new Date(storedData.expiration) > new Date()
     ) {
-      login(storedData.userId, storedData.token);
+      login(
+        storedData.userId,
+        storedData.email,
+        storedData.token,
+        new Date(storedData.expiration)
+      );
     }
   }, [login]);
-*/
 
-  return { login, logout, userId, name };
+  return { token, login, logout, userId, email };
 };

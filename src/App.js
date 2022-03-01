@@ -18,7 +18,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 
 const MainPage = React.lazy(() => import("./pages/Main"));
 const NotLoggedIn = React.lazy(() => import("./pages/NotLoggedIn"));
-const LoginSuccess = React.lazy(() => import("./pages/LoginSuccess"));
+const Login = React.lazy(() => import("./pages/Login"));
 
 const darkTheme = createTheme({
   palette: {
@@ -39,18 +39,31 @@ const darkTheme = createTheme({
       main: "#b71c1c",
     },
   },
+  components: {
+    MuiOutlinedInput: {
+      styleOverrides: {
+        input: {
+          "&:-webkit-autofill": {
+            "-webkit-box-shadow": "0 0 0 100px var(--primary-weak) inset",
+            "-webkit-text-fill-color": "var(--text-primary)",
+          },
+        },
+      },
+    },
+  },
 });
 
 function App() {
-  const { login, logout, userId, name } = useAuth();
+  const { token, login, logout, userId, email } = useAuth();
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn: !!userId,
+        isLoggedIn: !!token,
+        token: token,
+        userId: userId,
         login: login,
         logout: logout,
-        name: name,
-        userId: userId,
+        email: email,
       }}
     >
       <ThemeProvider theme={darkTheme}>
@@ -67,9 +80,12 @@ function App() {
               <Route
                 path="/"
                 exact
-                component={userId !== null ? MainPage : NotLoggedIn}
+                component={
+                  token !== null && userId !== null ? MainPage : NotLoggedIn
+                }
               />
-              <Route path="/loginSuccess" exact component={LoginSuccess} />
+              {token == null && <Route path="/login" exact component={Login} />}
+
               <Redirect to="/" />
             </Switch>
           </Suspense>
