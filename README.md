@@ -7,3 +7,5 @@ It's the most simple todo web app you could have ever asked for..
 - Database was created and maintained by MongoDB Atlas. 
 - Authentication was providedy by Passport.js and Google Oauth 2.0. 
 - Server side is deployed on Heroku and the Client side is deployed on Firebase 
+
+Backend can be found here -> https://github.com/amedumer/sfnt-backend
