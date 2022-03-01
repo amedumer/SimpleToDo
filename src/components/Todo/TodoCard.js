@@ -61,7 +61,7 @@ export default function TodoCard(props) {
     event.preventDefault();
     try {
       await sendRequest(
-        process.env.REACT_APP_BACKEND_URL + `/todo/changeState/${props.id}`,
+        `https://simplefingtodo.herokuapp.com/v1/todo/changeState/${props.id}`,
         "POST",
         JSON.stringify({
           id: props.id,
@@ -86,7 +86,7 @@ export default function TodoCard(props) {
   const deleteHandler = async (event) => {
     try {
       await sendRequest(
-        process.env.REACT_APP_BACKEND_URL + `/todo/${props.id}`,
+        `https://simplefingtodo.herokuapp.com/v1/todo/${props.id}`,
         "DELETE",
         {},
         { Authorization: "Bearer " + auth.token }

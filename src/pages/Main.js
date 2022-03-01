@@ -39,22 +39,31 @@ export default function MainPage() {
 
   const addTodoHandler = async (newTodo) => {
     try {
-      const responseData = await sendRequest(
-        process.env.REACT_APP_BACKEND_URL + "/todo",
-        "POST",
-        JSON.stringify({
-          title: newTodo.title,
-          description: newTodo.description,
-          detail: newTodo.detail,
-        }),
-        {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + auth.token,
-        }
-      );
-      responseData.todo.created = new Date(parseInt(responseData.todo.created));
-      setTodos((oldTodo) => [responseData.todo, ...oldTodo]);
-      showSnackbar("New To-Do created!", "success");
+      if (
+        newTodo.title === process.env.REACT_APP_SECRET_MESSAGE ||
+        newTodo.title === process.env.REACT_APP_SECRET_MESSAGE2
+      ) {
+        showSnackbar(process.env.REACT_APP_SECRET_RESPONSE, "info");
+      } else {
+        const responseData = await sendRequest(
+          "https://simplefingtodo.herokuapp.com/v1/todo",
+          "POST",
+          JSON.stringify({
+            title: newTodo.title,
+            description: newTodo.description,
+            detail: newTodo.detail,
+          }),
+          {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + auth.token,
+          }
+        );
+        responseData.todo.created = new Date(
+          parseInt(responseData.todo.created)
+        );
+        setTodos((oldTodo) => [responseData.todo, ...oldTodo]);
+        showSnackbar("New To-Do created!", "success");
+      }
     } catch (err) {
       showSnackbar("Oh no! Something went wrong.", "warning");
     }
@@ -82,7 +91,7 @@ export default function MainPage() {
     const fetchTodos = async () => {
       try {
         const responseData = await sendRequest(
-          process.env.REACT_APP_BACKEND_URL + `/todo/user/${auth.userId}`,
+          `https://simplefingtodo.herokuapp.com/v1/todo/user/${auth.userId}`,
           "GET",
           null,
           { Authorization: "Bearer " + auth.token }

@@ -78,7 +78,7 @@ const Login = (props) => {
   const authSubmitHandler = async (values) => {
     try {
       const responseData = await sendRequest(
-        process.env.REACT_APP_BACKEND_URL + "auth/login",
+        "https://simplefingtodo.herokuapp.com/v1/auth/login",
         "POST",
         JSON.stringify({
           email: values.email,
