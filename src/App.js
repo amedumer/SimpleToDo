@@ -6,9 +6,12 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-
+import Container from '@mui/material/Container';
 import React, { Suspense } from "react";
 import MenuAppBar from "./components/Navbar";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+
 //import MainPage from "./pages/Main";
 //import NotLoggedIn from "./pages/NotLoggedIn";
 //import LoginSuccess from "./pages/LoginSuccess";
@@ -53,6 +56,19 @@ const darkTheme = createTheme({
   },
 });
 
+function Copyright(props) {
+  return (
+    <Typography variant="body2" color="secondary" align="center" {...props}>
+      {"Copyright © "}
+      <Link color="inherit" href="">
+        SFTD
+      </Link>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+}
+
 function App() {
   const { token, login, logout, userId, email } = useAuth();
   return (
@@ -89,6 +105,10 @@ function App() {
               <Redirect to="/" />
             </Switch>
           </Suspense>
+                <Container >
+      <Copyright sx={{ mt: 8, mb: 4 }} />
+
+                </Container>
         </Router>
       </ThemeProvider>
     </AuthContext.Provider>
